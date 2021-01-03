@@ -1,23 +1,28 @@
 import { Auth0Provider } from '@auth0/auth0-react';
+import { BrowserRouter } from 'react-router-dom';
 import { authConfig } from './auth/config';
-import { SampleAuth } from './components/SampleAuth/SampleAuth';
-import { SampleMaterial } from './components/SampleMaterial';
+import { Routes } from './components/routing/Routes';
+import { createBrowserHistory } from 'history';
+
+export const history = createBrowserHistory();
+const onRedirectCallback = (appState: any) => {
+  history.replace(appState?.returnTo || window.location.pathname);
+};
 
 function App() {
   return (
-    <div className="main-container">
-      <Auth0Provider
-        domain={authConfig.domain}
-        clientId={authConfig.clientId}
-        audience={authConfig.audience}
-        redirectUri={window.location.origin}
-        scope={authConfig.scope}>
-        <SampleAuth />
-      </Auth0Provider>
-      <SampleMaterial/>
-    </div>
-
-
+    <Auth0Provider
+      domain={authConfig.domain}
+      clientId={authConfig.clientId}
+      audience={authConfig.audience}
+      redirectUri={window.location.origin}
+      scope={authConfig.scope}
+      onRedirectCallback={onRedirectCallback}
+    >
+      <BrowserRouter>
+        <Routes />
+      </BrowserRouter>
+    </Auth0Provider>
   );
 }
 
