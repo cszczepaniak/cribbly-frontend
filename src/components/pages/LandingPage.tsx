@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
+import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 
 const useStyles = makeStyles({
   landingPageContainer: {
@@ -58,6 +59,7 @@ export const LandingPage = () => {
         >
           Get Started
         </CallToActionButton>
+        <AccessPrivateDataButton />
       </div>
     </Container>
   );
