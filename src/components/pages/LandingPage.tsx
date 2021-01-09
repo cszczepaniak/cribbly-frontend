@@ -36,9 +36,6 @@ const CallToActionButton = withStyles({
 export const LandingPage = () => {
   const classes = useStyles();
   const { isSignedIn, loading, signInWithGoogle } = useAuth();
-  const handleLoginWithGoogle = async () => {
-    await signInWithGoogle();
-  };
   if (loading) {
     return <div>loading</div>;
   }
@@ -55,7 +52,7 @@ export const LandingPage = () => {
           </Typography>
         </div>
         <CallToActionButton
-          onClick={handleLoginWithGoogle}
+          onClick={signInWithGoogle}
           color='primary'
           variant='contained'
         >
