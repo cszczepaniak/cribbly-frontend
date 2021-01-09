@@ -1,6 +1,6 @@
 import { useState, useEffect, useContext, createContext } from 'react';
-import firebase from 'firebase';
 import firebaseConfig from '../secrets/firebaseConfig';
+import firebase from 'firebase/app';
 import 'firebase/auth';
 
 firebase.initializeApp(firebaseConfig);
@@ -8,31 +8,24 @@ firebase.initializeApp(firebaseConfig);
 interface Auth {
   isSignedIn: boolean;
   loading: boolean;
-  user: User | null;
-  signInWithGoogle: () => any;
-  signOut: () => void;
-}
-
-interface User {
-  displayName: string;
-  email: string;
-  photoURL: string;
-  getIdToken: () => Promise<string>;
+  user?: firebase.User;
+  signInWithGoogle: () => Promise<firebase.User | null>;
+  signOut: () => Promise<void>;
 }
 
 const initialAuth: Auth = {
   isSignedIn: false,
   loading: true,
-  user: null,
-  signInWithGoogle: () => {
+  signInWithGoogle: async () => {
     console.error('Did you forget to wrap your app in an auth provider?');
+    return null;
   },
-  signOut: () => {
+  signOut: async () => {
     console.error('Did you forget to wrap your app in an auth provider?');
   },
 };
 
-const authContext = createContext(initialAuth);
+const authContext = createContext<Auth>(initialAuth);
 
 export function ProvideAuth({ children }: { children: any }) {
   const auth = useProvideAuth();

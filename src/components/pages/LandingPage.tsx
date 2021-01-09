@@ -7,6 +7,7 @@ import {
   withStyles,
 } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const useStyles = makeStyles({
   landingPageContainer: {
@@ -34,6 +35,16 @@ const CallToActionButton = withStyles({
 
 export const LandingPage = () => {
   const classes = useStyles();
+  const { isSignedIn, loading, signInWithGoogle } = useAuth();
+  const handleLoginWithGoogle = async () => {
+    await signInWithGoogle();
+  };
+  if (loading) {
+    return <div>loading</div>;
+  }
+  if (isSignedIn) {
+    return <Redirect to='/home' />;
+  }
   return (
     <Container maxWidth='sm' className={classes.landingPageContainer}>
       <div className={classes.landingPageContent}>
@@ -44,7 +55,7 @@ export const LandingPage = () => {
           </Typography>
         </div>
         <CallToActionButton
-          onClick={() => {}}
+          onClick={handleLoginWithGoogle}
           color='primary'
           variant='contained'
         >
