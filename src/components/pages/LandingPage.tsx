@@ -6,7 +6,6 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import { useAuth0 } from '@auth0/auth0-react';
 import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles({
@@ -35,15 +34,6 @@ const CallToActionButton = withStyles({
 
 export const LandingPage = () => {
   const classes = useStyles();
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
-
-  const handleOnClick = () => {
-    loginWithRedirect({ redirectUri: 'http://localhost:3000/home' });
-  };
-
-  if (isAuthenticated) {
-    return <Redirect to='/home' />;
-  }
   return (
     <Container maxWidth='sm' className={classes.landingPageContainer}>
       <div className={classes.landingPageContent}>
@@ -54,7 +44,7 @@ export const LandingPage = () => {
           </Typography>
         </div>
         <CallToActionButton
-          onClick={handleOnClick}
+          onClick={() => {}}
           color='primary'
           variant='contained'
         >
