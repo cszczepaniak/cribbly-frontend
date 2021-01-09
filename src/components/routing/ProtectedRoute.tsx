@@ -1,12 +1,20 @@
-import { withAuthenticationRequired } from '@auth0/auth0-react';
-import { Route } from 'react-router-dom';
+import React from 'react';
+import { Redirect, Route } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
-interface PropShape {
-  component: any;
-  [x: string]: any;
+interface Props {
+  redirectTo: string;
+  path: string;
+  exact: boolean;
 }
 
-export const ProtectedRoute: React.FunctionComponent<PropShape> = ({
-  component,
-  ...args
-}) => <Route component={withAuthenticationRequired(component)} {...args} />;
+export const ProtectedRoute: React.FunctionComponent<Props> = ({
+  redirectTo,
+  ...rest
+}) => {
+  const { isSignedIn, loading } = useAuth();
+  if (isSignedIn && !loading) {
+    return <Route {...rest} />;
+  }
+  return <Redirect to={redirectTo} />;
+};

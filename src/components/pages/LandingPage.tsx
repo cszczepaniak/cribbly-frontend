@@ -6,8 +6,9 @@ import {
   Typography,
   withStyles,
 } from '@material-ui/core';
-import { useAuth0 } from '@auth0/auth0-react';
 import { Redirect } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
+import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 
 const useStyles = makeStyles({
   landingPageContainer: {
@@ -35,13 +36,11 @@ const CallToActionButton = withStyles({
 
 export const LandingPage = () => {
   const classes = useStyles();
-  const { loginWithRedirect, isAuthenticated } = useAuth0();
-
-  const handleOnClick = () => {
-    loginWithRedirect({ redirectUri: 'http://localhost:3000/home' });
-  };
-
-  if (isAuthenticated) {
+  const { isSignedIn, loading, signInWithGoogle } = useAuth();
+  if (loading) {
+    return <div>loading</div>;
+  }
+  if (isSignedIn) {
     return <Redirect to='/home' />;
   }
   return (
@@ -54,12 +53,13 @@ export const LandingPage = () => {
           </Typography>
         </div>
         <CallToActionButton
-          onClick={handleOnClick}
+          onClick={signInWithGoogle}
           color='primary'
           variant='contained'
         >
           Get Started
         </CallToActionButton>
+        <AccessPrivateDataButton />
       </div>
     </Container>
   );
