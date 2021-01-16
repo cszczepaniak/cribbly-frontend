@@ -9,6 +9,8 @@ import {
 import { Redirect } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
+import { useTournament } from '../../hooks/useTournament';
+import moment from 'moment';
 
 const useStyles = makeStyles({
   landingPageContainer: {
@@ -34,10 +36,29 @@ const CallToActionButton = withStyles({
   },
 })(Button);
 
+const nextTournamentText = (
+  isLoading: boolean,
+  isOpenForRegistration: boolean,
+  date: Date
+): string => {
+  if (isLoading) {
+    return 'Loading tournament details...';
+  }
+  if (isOpenForRegistration) {
+    return `Next tournament is on ${moment(date).format('MMMM Do, YYYY')}!`;
+  }
+  return 'No tournament is scheduled. You can still register to be prepared for future tournaments!';
+};
+
 export const LandingPage = () => {
   const classes = useStyles();
-  const { isSignedIn, loading, signInWithGoogle } = useAuth();
-  if (loading) {
+  const { isSignedIn, loading: authIsLoading, signInWithGoogle } = useAuth();
+  const {
+    date,
+    isLoading: tournamentIsLoading,
+    isOpenForRegistration,
+  } = useTournament();
+  if (authIsLoading) {
     return <div>loading</div>;
   }
   if (isSignedIn) {
@@ -49,7 +70,11 @@ export const LandingPage = () => {
         <div>
           <Typography variant='h2'>Welcome to Cribbly.</Typography>
           <Typography align='center'>
-            Next tournament starts on March 14, 2021
+            {nextTournamentText(
+              tournamentIsLoading,
+              isOpenForRegistration,
+              date
+            )}
           </Typography>
         </div>
         <CallToActionButton
