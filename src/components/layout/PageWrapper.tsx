@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, makeStyles } from '@material-ui/core';
 import { AppBar } from './AppBar';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
     },

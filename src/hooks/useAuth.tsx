@@ -85,7 +85,7 @@ function useProvideAuth() {
     // ... component that utilizes this hook to re-render with the ...
     // ... latest auth object.
     useEffect(() => {
-        const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+        const unsubscribe = firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 setUser(user);
                 setIsSignedIn(true);

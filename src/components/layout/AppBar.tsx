@@ -8,7 +8,7 @@ import {
 
 import { Link } from 'react-router-dom';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
     appBarButton: {
         color: theme.palette.primary.contrastText,
         '&:hover': {
