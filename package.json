@@ -55,7 +55,7 @@
         "prettier": "^2.2.1"
     },
     "lint-staged": {
-        "./src/**/*.{ts,tsx}": [
+        "*.{ts,tsx}": [
             "pretter --write",
             "eslint --fix --max-warnings 0"
         ]
