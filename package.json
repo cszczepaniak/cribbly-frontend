@@ -62,7 +62,7 @@
     },
     "lint-staged": {
         "*.{ts,tsx}": [
-            "pretter --write",
+            "prettier --write",
             "eslint --fix --max-warnings 0"
         ]
     }
