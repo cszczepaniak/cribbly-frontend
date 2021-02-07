@@ -3,6 +3,7 @@ import { Button } from '@material-ui/core';
 import { useAuth } from '../../hooks/useAuth';
 import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 import axios from 'axios';
+import { PageWrapper } from '../layout/PageWrapper';
 
 export const WelcomePage = () => {
     const { user, signOut } = useAuth();
@@ -20,7 +21,7 @@ export const WelcomePage = () => {
     });
 
     return (
-        <div>
+        <PageWrapper>
             <div>
                 Welcome{isReturning && ' back'}, {user?.displayName}
             </div>
@@ -28,6 +29,6 @@ export const WelcomePage = () => {
             <Button color='primary' variant='contained' onClick={signOut}>
                 Logout
             </Button>
-        </div>
+        </PageWrapper>
     );
 };
