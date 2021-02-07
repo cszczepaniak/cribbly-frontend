@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { LandingPage } from '../pages/LandingPage';
+import { TeamPage } from '../pages/TeamPage';
 import { WelcomePage } from '../pages/WelcomePage';
 import { ProtectedRoute } from '../routing/ProtectedRoute';
 export const Routes = () => {
@@ -11,6 +12,9 @@ export const Routes = () => {
             </Route>
             <ProtectedRoute exact path='/home' redirectTo='/'>
                 <WelcomePage />
+            </ProtectedRoute>
+            <ProtectedRoute exact path='/team' redirectTo='/'>
+                <TeamPage />
             </ProtectedRoute>
         </Switch>
     );
