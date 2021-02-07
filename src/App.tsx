@@ -4,21 +4,15 @@ import { ProvideAuth } from './hooks/useAuth';
 import { ProvideTournament } from './hooks/useTournament';
 
 function App() {
-
-   return (
-
-
-
-    
-
-          <ProvideAuth>
-          <ProvideTournament>
-            <BrowserRouter>
-              <Routes />
-        </BrowserRouter>
-      </ProvideTournament>
-    </ProvideAuth>
-  );
+    return (
+        <ProvideAuth>
+            <ProvideTournament>
+                <BrowserRouter>
+                    <Routes />
+                </BrowserRouter>
+            </ProvideTournament>
+        </ProvideAuth>
+    );
 }
 
 export default App;
