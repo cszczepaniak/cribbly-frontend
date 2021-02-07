@@ -15,6 +15,7 @@ export const WelcomePage = () => {
                 email: user?.email,
                 name: user?.displayName,
             });
+            var a;
             setIsReturning(res.data.isReturning);
         };
         postLoginToBackend();
