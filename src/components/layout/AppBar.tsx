@@ -27,6 +27,7 @@ export const AppBar = () => {
                     to='/home'
                     className={classes.appBarButton}
                     disableRipple
+                    variant='text'
                 >
                     Home
                 </Button>
@@ -35,6 +36,7 @@ export const AppBar = () => {
                     to='/team'
                     className={classes.appBarButton}
                     disableRipple
+                    variant='text'
                 >
                     My Team
                 </Button>
