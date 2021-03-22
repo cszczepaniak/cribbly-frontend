@@ -40,6 +40,15 @@ export const AppBar = () => {
                 >
                     My Team
                 </Button>
+                <Button
+                    component={Link}
+                    to='/standings'
+                    className={classes.appBarButton}
+                    disableRipple
+                    variant='text'
+                >
+                    Standings
+                </Button>
             </Toolbar>
         </MuiAppBar>
     );
