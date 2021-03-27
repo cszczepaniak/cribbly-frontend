@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Box from '@material-ui/core/Box';
 import Collapse from '@material-ui/core/Collapse';
@@ -13,6 +14,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import axios from 'axios';
 
 const useRowStyles = makeStyles({
     root: {
@@ -22,8 +24,10 @@ const useRowStyles = makeStyles({
     },
 });
 
-function createData(
+function Team(
+    id: number,
     name: string,
+    players: ReturnType<typeof Player>[],
     division: string,
     rank: number,
     totalScore: number,
@@ -31,7 +35,9 @@ function createData(
     losses: number,
 ) {
     return {
+        id,
         name,
+        players,
         division,
         rank,
         totalScore,
@@ -40,11 +46,17 @@ function createData(
     };
 }
 
-function Row(props: { row: ReturnType<typeof createData> }) {
-    const { row } = props;
+function Player(name: string, email: string) {
+    return {
+        name,
+        email,
+    };
+}
+
+function Row(props: { team: ReturnType<typeof Team> }) {
+    const { team } = props;
     const [open, setOpen] = React.useState(false);
     const classes = useRowStyles();
-
     return (
         <React.Fragment>
             <TableRow className={classes.root}>
@@ -62,15 +74,15 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                     </IconButton>
                 </TableCell>
                 <TableCell component='th' scope='row'>
-                    {row.name}
+                    {team.name}
                 </TableCell>
                 <TableCell component='th' scope='row'>
-                    {row.division}
+                    {team.division}
                 </TableCell>
-                <TableCell align='right'>{row.rank}</TableCell>
-                <TableCell align='right'>{row.totalScore}</TableCell>
-                <TableCell align='right'>{row.wins}</TableCell>
-                <TableCell align='right'>{row.losses}</TableCell>
+                <TableCell align='right'>{team.rank}</TableCell>
+                <TableCell align='right'>{team.totalScore}</TableCell>
+                <TableCell align='right'>{team.wins}</TableCell>
+                <TableCell align='right'>{team.losses}</TableCell>
             </TableRow>
             <TableRow>
                 <TableCell
@@ -87,8 +99,9 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                                 Players
                             </Typography>
                             <ul>
-                                <li>Adam S</li>
-                                <li>Connor S</li>
+                                {team.players.map(player => (
+                                    <li key={player.name}>{player.name}</li>
+                                ))}
                             </ul>
                         </Box>
                     </Collapse>
@@ -98,15 +111,32 @@ function Row(props: { row: ReturnType<typeof createData> }) {
     );
 }
 
-const rows = [
-    createData('Frozen yoghurt', 'Division', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 'Division', 237, 9.0, 37, 4.3),
-    createData('Eclair', 'Division', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 'Division', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 'Division', 356, 16.0, 49, 3.9),
-];
-
 export function StandingsTable() {
+    const [teams, setTeams] = React.useState([
+        {
+            id: 0,
+            name: '',
+            rank: 0,
+            totalScore: 0,
+            wins: 0,
+            losses: 0,
+            division: '',
+            players: [
+                {
+                    name: '',
+                    email: '',
+                },
+            ],
+        },
+    ]);
+
+    useEffect(() => {
+        const getTeams = async () => {
+            const res = await axios.get('/api/team');
+            setTeams(res.data);
+        };
+        getTeams();
+    }, []);
     return (
         <TableContainer component={Paper}>
             <Table aria-label='collapsible table'>
@@ -122,8 +152,8 @@ export function StandingsTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.map(row => (
-                        <Row key={row.name} row={row} />
+                    {teams.map(team => (
+                        <Row key={team.id} team={team} />
                     ))}
                 </TableBody>
             </Table>
