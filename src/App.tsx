@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes } from './components/routing/Routes';
-import { ProvideAuth } from './hooks/useAuth';
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { store } from './store';
+import { SettingsActions } from './shared/settings/settings-reducer';
 
 const theme = createMuiTheme({
     props: {
@@ -19,13 +19,21 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <Provider store={store}>
-                <ProvideAuth>
-                    <BrowserRouter>
-                        <Routes />
-                    </BrowserRouter>
-                </ProvideAuth>
+                <AppComponent />
             </Provider>
         </ThemeProvider>
+    );
+}
+
+export function AppComponent() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(SettingsActions.loadSettingsRequest());
+    }, [dispatch]);
+    return (
+        <BrowserRouter>
+            <Routes />
+        </BrowserRouter>
     );
 }
 

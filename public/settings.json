@@ -1,0 +1,10 @@
+{
+    "firebaseConfig": {
+        "apiKey": "AIzaSyBO-s3ZKBZ50o31sqwtfDqmT3HUY-F8hRM",
+        "authDomain": "cribbly-85af3.firebaseapp.com",
+        "projectId": "cribbly-85af3",
+        "storageBucket": "cribbly-85af3.appspot.com",
+        "messagingSenderId": "182657041036",
+        "appId": "1:182657041036:web:f51b60f05444653efab1a9"
+    }
+}
