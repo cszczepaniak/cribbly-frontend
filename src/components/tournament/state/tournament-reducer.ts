@@ -13,6 +13,10 @@ const tournamentSlice = createSlice({
             state.isLoading = false;
             state.tournament = payload;
         },
+        loadNextTournamentFailure(state, { payload }: PayloadAction<string>) {
+            state.isLoading = false;
+            state.error = payload;
+        },
     },
 });
 

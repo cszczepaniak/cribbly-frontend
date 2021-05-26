@@ -1,16 +1,12 @@
-import React from 'react';
-import {
-    Button,
-    Container,
-    makeStyles,
-    Typography,
-    withStyles,
-} from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Button, Container, makeStyles, Typography, withStyles } from '@material-ui/core';
 import { Redirect } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
-import { useTournament } from '../../hooks/useTournament';
 import moment from 'moment';
+import { useRootSelector } from '../../store';
+import { useDispatch } from 'react-redux';
+import { TournamentActions } from '../tournament/state/tournament-reducer';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -36,11 +32,7 @@ const CallToActionButton = withStyles({
     },
 })(Button);
 
-const nextTournamentText = (
-    isLoading: boolean,
-    isOpenForRegistration: boolean,
-    date: Date,
-): string => {
+const nextTournamentText = (isLoading: boolean, isOpenForRegistration: boolean, date: string): string => {
     if (isLoading) {
         return 'Loading tournament details...';
     }
@@ -53,11 +45,14 @@ const nextTournamentText = (
 export const LandingPage = () => {
     const classes = useStyles();
     const { isSignedIn, loading: authIsLoading, signInWithGoogle } = useAuth();
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(TournamentActions.loadNextTournamentRequest());
+    }, [dispatch]);
     const {
-        date,
         isLoading: tournamentIsLoading,
-        isOpenForRegistration,
-    } = useTournament();
+        tournament: { date, isOpenForRegistration },
+    } = useRootSelector(state => state.tournament);
     if (authIsLoading) {
         return <div>loading</div>;
     }
@@ -70,18 +65,10 @@ export const LandingPage = () => {
                 <div>
                     <Typography variant='h2'>Welcome to Cribbly.</Typography>
                     <Typography align='center'>
-                        {nextTournamentText(
-                            tournamentIsLoading,
-                            isOpenForRegistration,
-                            date,
-                        )}
+                        {nextTournamentText(tournamentIsLoading, isOpenForRegistration, date)}
                     </Typography>
                 </div>
-                <CallToActionButton
-                    onClick={signInWithGoogle}
-                    color='primary'
-                    variant='contained'
-                >
+                <CallToActionButton onClick={signInWithGoogle} color='primary' variant='contained'>
                     Get Started
                 </CallToActionButton>
                 <AccessPrivateDataButton />

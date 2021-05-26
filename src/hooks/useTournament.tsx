@@ -23,11 +23,7 @@ const tournamentContext = createContext<Tournament>(initialTournament);
 
 export function ProvideTournament({ children }: { children: any }) {
     const tournament = useProvideTournament();
-    return (
-        <tournamentContext.Provider value={tournament}>
-            {children}
-        </tournamentContext.Provider>
-    );
+    return <tournamentContext.Provider value={tournament}>{children}</tournamentContext.Provider>;
 }
 
 export const useTournament = () => {

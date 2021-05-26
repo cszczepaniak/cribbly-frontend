@@ -1,5 +1,5 @@
-import { generateState } from '../../../test/state/redux-test-utils';
-import { initialTournament, Tournament } from './tournament-model';
+import { ModelFactory } from '../../../testing/model-factory';
+import { generateState } from '../../../testing/redux-test-utils';
 import { TournamentActions, tournamentReducer } from './tournament-reducer';
 
 describe('tournament reducer', () => {
@@ -17,20 +17,34 @@ describe('tournament reducer', () => {
     });
 
     test('successfully loading a tournament sets loading to false', () => {
-        const state = generateState(tournamentReducer, TournamentActions.loadNextTournamentSuccess(initialTournament));
+        const state = generateState(
+            tournamentReducer,
+            TournamentActions.loadNextTournamentSuccess(ModelFactory.createTournament()),
+        );
 
         expect(state.isLoading).toEqual(false);
     });
 
     test('successfully loading a tournament sets the tournament', () => {
-        const tournament: Tournament = {
-            id: 123,
-            date: new Date('1/1/1999'),
-            isActive: true,
-            isOpenForRegistration: true,
-        };
+        const tournament = ModelFactory.createTournament();
         const state = generateState(tournamentReducer, TournamentActions.loadNextTournamentSuccess(tournament));
 
         expect(state.tournament).toEqual(tournament);
+    });
+
+    test('failing to load a tournament sets the error', () => {
+        const state = generateState(tournamentReducer, TournamentActions.loadNextTournamentFailure('an error'));
+
+        expect(state.error).toEqual('an error');
+    });
+
+    test('failing to load a tournament sets loading to false', () => {
+        const state = generateState(
+            tournamentReducer,
+            TournamentActions.loadNextTournamentRequest(),
+            TournamentActions.loadNextTournamentFailure('an error'),
+        );
+
+        expect(state.isLoading).toEqual(false);
     });
 });

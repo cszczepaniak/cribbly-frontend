@@ -1,6 +1,6 @@
 import { Action, Reducer } from 'redux';
 import configureMockStore, { MockStore } from 'redux-mock-store';
-import { rootReducer, RootState } from '../../store/root-reducer';
+import { rootReducer, RootState } from '../store/root-reducer';
 import createSagaMiddleware from 'redux-saga';
 
 export function generateState<T>(reducer: Reducer<T>, ...actions: Action[]): T {
