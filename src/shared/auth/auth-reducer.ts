@@ -22,7 +22,7 @@ const authSlice = createSlice({
             state.isSignedIn = false;
             state.user = null;
         },
-        signInSucess(state, { payload }: PayloadAction<firebase.User | null>) {
+        signInSuccess(state, { payload }: PayloadAction<firebase.User | null>) {
             state.isLoading = false;
             state.isSignedIn = true;
             state.user = payload;

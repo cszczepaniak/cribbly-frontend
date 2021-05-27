@@ -21,7 +21,7 @@ function* signInWithGoogle(createAuth: AuthFactory) {
     const settings: AppSettings = yield select(selectSettings);
     const auth = createAuth(settings.firebaseConfig);
     const res: firebase.auth.UserCredential = yield auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    yield put(AuthActions.signInSucess(res.user));
+    yield put(AuthActions.signInSuccess(res.user));
 }
 
 function* signOut(createAuth: AuthFactory) {

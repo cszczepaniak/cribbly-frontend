@@ -23,7 +23,7 @@ describe('auth saga', () => {
 
             await waitFor(() =>
                 expect(store.getActions()).toContainEqual(
-                    AuthActions.signInSucess(expect.objectContaining({ email: 'yo yo yo' } as firebase.User)),
+                    AuthActions.signInSuccess(expect.objectContaining({ email: 'yo yo yo' } as firebase.User)),
                 ),
             );
         });

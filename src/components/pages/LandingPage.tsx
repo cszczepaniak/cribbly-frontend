@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 import { Button, Container, makeStyles, Typography, withStyles } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
 import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 import moment from 'moment';
 import { useRootSelector } from '../../store';
 import { useDispatch } from 'react-redux';
 import { TournamentActions } from '../tournament/state/tournament-reducer';
+import { useAuth } from '../../shared/auth/auth-hooks';
+import { AuthActions } from '../../shared/auth/auth-reducer';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -44,20 +45,28 @@ const nextTournamentText = (isLoading: boolean, isOpenForRegistration: boolean, 
 
 export const LandingPage = () => {
     const classes = useStyles();
-    const { isSignedIn, loading: authIsLoading, signInWithGoogle } = useAuth();
-    const dispatch = useDispatch();
-    useEffect(() => {
-        dispatch(TournamentActions.loadNextTournamentRequest());
-    }, [dispatch]);
+
+    const { isSignedIn, isLoading: authIsLoading } = useAuth();
     const {
         isLoading: tournamentIsLoading,
         tournament: { date, isOpenForRegistration },
     } = useRootSelector(state => state.tournament);
-    if (authIsLoading) {
-        return <div>loading</div>;
-    }
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(TournamentActions.loadNextTournamentRequest());
+    }, [dispatch]);
+
+    const handleSignInClick = () => {
+        dispatch(AuthActions.signInWithGoogleRequest());
+    };
+
     if (isSignedIn) {
         return <Redirect to='/home' />;
+    }
+    if (authIsLoading) {
+        return <div>loading</div>;
     }
     return (
         <Container maxWidth='sm' className={classes.landingPageContainer}>
@@ -68,7 +77,12 @@ export const LandingPage = () => {
                         {nextTournamentText(tournamentIsLoading, isOpenForRegistration, date)}
                     </Typography>
                 </div>
-                <CallToActionButton onClick={signInWithGoogle} color='primary' variant='contained'>
+                <CallToActionButton
+                    aria-label='sign in'
+                    onClick={handleSignInClick}
+                    color='primary'
+                    variant='contained'
+                >
                     Get Started
                 </CallToActionButton>
                 <AccessPrivateDataButton />

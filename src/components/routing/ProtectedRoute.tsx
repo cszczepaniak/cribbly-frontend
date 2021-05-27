@@ -1,6 +1,6 @@
 import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../shared/auth/auth-hooks';
 
 interface Props {
     redirectTo: string;
@@ -8,12 +8,9 @@ interface Props {
     exact: boolean;
 }
 
-export const ProtectedRoute: React.FunctionComponent<Props> = ({
-    redirectTo,
-    ...rest
-}) => {
-    const { isSignedIn, loading } = useAuth();
-    if (isSignedIn && !loading) {
+export const ProtectedRoute: React.FunctionComponent<Props> = ({ redirectTo, ...rest }) => {
+    const { isSignedIn, isLoading } = useAuth();
+    if (isSignedIn && !isLoading) {
         return <Route {...rest} />;
     }
     return <Redirect to={redirectTo} />;
