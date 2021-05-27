@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../store/root-reducer';
 import { AppSettings } from './settings-model';
 
 const defaultSettings: AppSettings = {
@@ -22,6 +23,6 @@ const settingsSlice = createSlice({
         },
     },
 });
-
+export const selectSettings = (state: RootState) => state.settings;
 export const SettingsActions = settingsSlice.actions;
 export const settingsReducer = settingsSlice.reducer;

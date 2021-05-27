@@ -2,7 +2,7 @@ export interface AppSettings {
     firebaseConfig: FirebaseConfig;
 }
 
-interface FirebaseConfig {
+export interface FirebaseConfig {
     apiKey: string;
     authDomain: string;
     projectId: string;

@@ -1,6 +1,7 @@
 import { Tournament } from '../components/tournament/state/tournament-model';
 import faker from 'faker';
 import { AppSettings } from '../shared/settings/settings-model';
+import firebase from 'firebase/app';
 
 function createTournament(model: Partial<Tournament> = {}): Tournament {
     return {
@@ -25,7 +26,20 @@ function createAppSettings(model: Partial<AppSettings> = {}): AppSettings {
     };
 }
 
+function createUser(model: Partial<firebase.User> = {}): firebase.User {
+    return {
+        displayName: model.displayName || faker.name.firstName(),
+        email: model.email || faker.internet.email(),
+        emailVerified: model.emailVerified ?? faker.datatype.boolean(),
+        isAnonymous: model.isAnonymous ?? faker.datatype.boolean(),
+        phoneNumber: model.phoneNumber || faker.phone.phoneNumber(),
+        refreshToken: model.refreshToken || faker.git.commitSha(),
+        getIdToken: model.getIdToken || (() => Promise.resolve(faker.git.commitSha())),
+    } as firebase.User;
+}
+
 export const ModelFactory = {
     createTournament,
     createAppSettings,
+    createUser,
 };
