@@ -15,16 +15,6 @@ const theme = createMuiTheme({
     },
 });
 
-function App() {
-    return (
-        <ThemeProvider theme={theme}>
-            <Provider store={store}>
-                <AppComponent />
-            </Provider>
-        </ThemeProvider>
-    );
-}
-
 export function AppComponent() {
     const dispatch = useDispatch();
     useEffect(() => {
@@ -34,6 +24,16 @@ export function AppComponent() {
         <BrowserRouter>
             <Routes />
         </BrowserRouter>
+    );
+}
+
+function App() {
+    return (
+        <ThemeProvider theme={theme}>
+            <Provider store={store}>
+                <AppComponent />
+            </Provider>
+        </ThemeProvider>
     );
 }
 
