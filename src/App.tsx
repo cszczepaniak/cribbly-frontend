@@ -1,9 +1,10 @@
+import React, { useEffect } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Routes } from './components/routing/Routes';
-import { ProvideAuth } from './hooks/useAuth';
-import { ProvideTournament } from './hooks/useTournament';
+import { Provider, useDispatch } from 'react-redux';
+import { store } from './store';
+import { SettingsActions } from './shared/settings/settings-reducer';
 
 const theme = createMuiTheme({
     props: {
@@ -14,16 +15,24 @@ const theme = createMuiTheme({
     },
 });
 
+export function AppComponent() {
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(SettingsActions.loadSettingsRequest());
+    }, [dispatch]);
+    return (
+        <BrowserRouter>
+            <Routes />
+        </BrowserRouter>
+    );
+}
+
 function App() {
     return (
         <ThemeProvider theme={theme}>
-            <ProvideAuth>
-                <ProvideTournament>
-                    <BrowserRouter>
-                        <Routes />
-                    </BrowserRouter>
-                </ProvideTournament>
-            </ProvideAuth>
+            <Provider store={store}>
+                <AppComponent />
+            </Provider>
         </ThemeProvider>
     );
 }

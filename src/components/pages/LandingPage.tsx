@@ -1,16 +1,13 @@
-import React from 'react';
-import {
-    Button,
-    Container,
-    makeStyles,
-    Typography,
-    withStyles,
-} from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import React, { useEffect } from 'react';
+import { Button, Container, makeStyles, Typography, withStyles } from '@material-ui/core';
 import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
-import { useTournament } from '../../hooks/useTournament';
 import moment from 'moment';
+import { useRootSelector } from '../../store';
+import { useDispatch } from 'react-redux';
+import { TournamentActions } from '../tournament/state/tournament-reducer';
+import { useAuth } from '../../shared/auth/auth-hooks';
+import { AuthActions } from '../../shared/auth/auth-reducer';
+import { Redirect } from 'react-router-dom';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -36,11 +33,7 @@ const CallToActionButton = withStyles({
     },
 })(Button);
 
-const nextTournamentText = (
-    isLoading: boolean,
-    isOpenForRegistration: boolean,
-    date: Date,
-): string => {
+const nextTournamentText = (isLoading: boolean, isOpenForRegistration: boolean, date: string): string => {
     if (isLoading) {
         return 'Loading tournament details...';
     }
@@ -52,17 +45,28 @@ const nextTournamentText = (
 
 export const LandingPage = () => {
     const classes = useStyles();
-    const { isSignedIn, loading: authIsLoading, signInWithGoogle } = useAuth();
+
+    const { isSignedIn, isLoading: authIsLoading } = useAuth();
     const {
-        date,
         isLoading: tournamentIsLoading,
-        isOpenForRegistration,
-    } = useTournament();
-    if (authIsLoading) {
-        return <div>loading</div>;
-    }
+        tournament: { date, isOpenForRegistration },
+    } = useRootSelector(state => state.tournament);
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(TournamentActions.loadNextTournamentRequest());
+    }, [dispatch]);
+
+    const handleSignInClick = () => {
+        dispatch(AuthActions.signInWithGoogleRequest());
+    };
+
     if (isSignedIn) {
         return <Redirect to='/home' />;
+    }
+    if (authIsLoading) {
+        return <div>loading</div>;
     }
     return (
         <Container maxWidth='sm' className={classes.landingPageContainer}>
@@ -70,15 +74,12 @@ export const LandingPage = () => {
                 <div>
                     <Typography variant='h2'>Welcome to Cribbly.</Typography>
                     <Typography align='center'>
-                        {nextTournamentText(
-                            tournamentIsLoading,
-                            isOpenForRegistration,
-                            date,
-                        )}
+                        {nextTournamentText(tournamentIsLoading, isOpenForRegistration, date)}
                     </Typography>
                 </div>
                 <CallToActionButton
-                    onClick={signInWithGoogle}
+                    aria-label='sign in'
+                    onClick={handleSignInClick}
                     color='primary'
                     variant='contained'
                 >

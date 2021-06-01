@@ -1,9 +1,8 @@
 import { useState, useEffect, useContext, createContext } from 'react';
-import firebaseConfig from '../secrets/firebaseConfig.json';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
-firebase.initializeApp(firebaseConfig);
+// firebase.initializeApp(firebaseConfig);
 
 interface Auth {
     isSignedIn: boolean;
@@ -63,9 +62,7 @@ function useProvideAuth() {
 
     const signInWithGoogle = async () => {
         setLoading(true);
-        const res = await firebase
-            .auth()
-            .signInWithPopup(new firebase.auth.GoogleAuthProvider());
+        const res = await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
         setUser(res.user);
         setLoading(false);
         setIsSignedIn(true);
