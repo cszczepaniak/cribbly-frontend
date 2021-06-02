@@ -12,7 +12,11 @@ describe('auth reducer', () => {
         test('sets isSignedIn to false', () => {
             const state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
                 AuthActions.signInWithGoogleRequest(),
             );
 
@@ -21,7 +25,11 @@ describe('auth reducer', () => {
         test('sets user to null', () => {
             const state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
                 AuthActions.signInWithGoogleRequest(),
             );
 
@@ -30,7 +38,11 @@ describe('auth reducer', () => {
         test('sets player to null', () => {
             const state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
                 AuthActions.signInWithGoogleRequest(),
             );
 
@@ -43,7 +55,11 @@ describe('auth reducer', () => {
             const state = generateState(
                 authReducer,
                 AuthActions.signInWithGoogleRequest(),
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
             );
 
             expect(state.isLoading).toEqual(false);
@@ -52,24 +68,44 @@ describe('auth reducer', () => {
             const user = ModelFactory.createUser();
             const state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user, player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({ user, player: ModelFactory.createPlayer(), isReturning: false }),
             );
 
             expect(state.user).toEqual(user);
         });
         test('loads the player into redux', () => {
             const player = ModelFactory.createPlayer();
-            const state = generateState(authReducer, AuthActions.signInSuccess({ user: null, player }));
+            const state = generateState(
+                authReducer,
+                AuthActions.signInSuccess({ user: null, player, isReturning: false }),
+            );
 
             expect(state.player).toEqual(player);
         });
         test('sets isSignedIn to true', () => {
             const state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
             );
 
             expect(state.isSignedIn).toEqual(true);
+        });
+
+        test.each([true, false])('sets isReturning properly', isReturning => {
+            const state = generateState(
+                authReducer,
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning,
+                }),
+            );
+
+            expect(state.isReturning).toEqual(isReturning);
         });
     });
 
@@ -78,7 +114,11 @@ describe('auth reducer', () => {
         beforeEach(() => {
             state = generateState(
                 authReducer,
-                AuthActions.signInSuccess({ user: ModelFactory.createUser(), player: ModelFactory.createPlayer() }),
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
                 AuthActions.signOutRequest(),
             );
         });

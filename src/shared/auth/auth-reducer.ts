@@ -2,21 +2,20 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import firebase from 'firebase/app';
 import { Player } from '../../models/Player';
 
+type NullableFirebaseUser = firebase.User | null;
+
 export interface AuthState {
     isSignedIn: boolean;
     isLoading: boolean;
-    user: firebase.User | null;
+    isReturning: boolean;
+    user: NullableFirebaseUser;
     player: Player | null;
-}
-
-interface SignInSuccessPayload {
-    user: firebase.User | null;
-    player: Player;
 }
 
 const initialAuth: AuthState = {
     isSignedIn: false,
     isLoading: false,
+    isReturning: false,
     user: null,
     player: null,
 };
@@ -31,11 +30,15 @@ const authSlice = createSlice({
             state.user = null;
             state.player = null;
         },
-        signInSuccess(state, { payload }: PayloadAction<SignInSuccessPayload>) {
-            state.isLoading = false;
-            state.isSignedIn = true;
-            state.user = payload.user;
-            state.player = payload.player;
+        signInSuccess(
+            _,
+            { payload }: PayloadAction<{ user: NullableFirebaseUser; player: Player; isReturning: boolean }>,
+        ) {
+            return {
+                isLoading: false,
+                isSignedIn: true,
+                ...payload,
+            };
         },
         signOutRequest(state) {
             state.isSignedIn = false;
