@@ -1,9 +1,9 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { LandingPage } from '../pages/LandingPage';
-import { TeamPage } from '../pages/TeamPage/TeamPage';
 import { WelcomePage } from '../pages/WelcomePage';
 import { ProtectedRoute } from '../routing/ProtectedRoute';
+import { TeamPage } from '../team/TeamPage';
 export const Routes = () => {
     return (
         <Switch>

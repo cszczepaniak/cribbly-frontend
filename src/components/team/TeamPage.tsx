@@ -1,11 +1,11 @@
+import React, { useEffect, useState } from 'react';
 import { Button, TextField, Typography } from '@material-ui/core';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../../hooks/useAuth';
-import { Player } from '../../../models/Player';
-import { Team } from '../../../models/Team';
-import { PageWrapper } from '../../layout/PageWrapper';
 import { TeamSearch } from './TeamSearch';
+import { Player } from '../../models/Player';
+import { Team } from '../../models/Team';
+import { useAuth } from '../../shared/auth/auth-hooks';
+import { PageWrapper } from '../layout/PageWrapper';
 
 const defaultPlayer: Player = {
     id: 0,
@@ -51,13 +51,8 @@ export const TeamPage = () => {
                 selectedPlayer,
             ],
         };
-        const teamCreateResponse = await axios.post<number>(
-            '/api/team',
-            teamRequest,
-        );
-        const teamGetResponse = await axios.get<Team>(
-            `/api/team/${teamCreateResponse.data}`,
-        );
+        const teamCreateResponse = await axios.post<number>('/api/team', teamRequest);
+        const teamGetResponse = await axios.get<Team>(`/api/team/${teamCreateResponse.data}`);
         setTeam(teamGetResponse.data);
     };
 
@@ -67,8 +62,7 @@ export const TeamPage = () => {
             {selectedPlayer.name.length > 0 && (
                 <div>
                     <Typography>
-                        Found player: {selectedPlayer.name} with id{' '}
-                        {selectedPlayer.id}. Choose a team name:
+                        Found player: {selectedPlayer.name} with id {selectedPlayer.id}. Choose a team name:
                     </Typography>
                     <TextField
                         value={teamName}
@@ -80,10 +74,7 @@ export const TeamPage = () => {
                         <Button disabled={myId === 0} onClick={onClickCreate}>
                             Create Team
                         </Button>
-                        <Button
-                            color='default'
-                            onClick={() => setSelectedPlayer(defaultPlayer)}
-                        >
+                        <Button color='default' onClick={() => setSelectedPlayer(defaultPlayer)}>
                             Cancel
                         </Button>
                     </div>

@@ -1,14 +1,7 @@
-import {
-    Backdrop,
-    Button,
-    CircularProgress,
-    makeStyles,
-    TextField,
-    Typography,
-} from '@material-ui/core';
 import React, { useState } from 'react';
+import { Backdrop, Button, CircularProgress, makeStyles, TextField, Typography } from '@material-ui/core';
 import axios from 'axios';
-import { Player } from '../../../models/Player';
+import { Player } from '../../models/Player';
 
 const useStyles = makeStyles(theme => ({
     error: {
@@ -53,10 +46,7 @@ export const TeamSearch: React.FunctionComponent<Props> = ({ onSearch }) => {
 
     return (
         <>
-            <Typography>
-                You're not on a team yet. Type a player's email in below to
-                start creating a team.
-            </Typography>
+            <Typography>You're not on a team yet. Type a player's email in below to start creating a team.</Typography>
             <TextField
                 variant='outlined'
                 fullWidth
@@ -64,11 +54,7 @@ export const TeamSearch: React.FunctionComponent<Props> = ({ onSearch }) => {
                 value={query}
                 onChange={e => setQuery(e.target.value)}
             />
-            {error.length > 0 && (
-                <Typography className={classes.error}>
-                    Player not found
-                </Typography>
-            )}
+            {error.length > 0 && <Typography className={classes.error}>Player not found</Typography>}
             <Button onClick={onSearchClick}>Search</Button>
         </>
     );
