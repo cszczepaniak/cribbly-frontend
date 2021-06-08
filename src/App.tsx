@@ -27,7 +27,7 @@ export function AppComponent() {
                 <Route exact path='/'>
                     <LandingPage />
                 </Route>
-                <Route exact path='/app'>
+                <Route path='/app'>
                     <AuthenticatedApp />
                 </Route>
             </Switch>

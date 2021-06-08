@@ -1,4 +1,4 @@
-import { Player } from '../../models/Player';
+import { Player } from './auth-models';
 
 export interface LoginResponse {
     player: Player;

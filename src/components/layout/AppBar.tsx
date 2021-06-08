@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-    AppBar as MuiAppBar,
-    Button,
-    makeStyles,
-    Toolbar,
-} from '@material-ui/core';
+import { AppBar as MuiAppBar, Button, makeStyles, Toolbar } from '@material-ui/core';
 
 import { Link } from 'react-router-dom';
+import { Routes } from '../../shared/routing/routes';
 
 const useStyles = makeStyles(theme => ({
     appBarButton: {
@@ -23,8 +19,9 @@ export const AppBar = () => {
         <MuiAppBar position='fixed'>
             <Toolbar>
                 <Button
+                    aria-label='home'
                     component={Link}
-                    to='/home'
+                    to={Routes.home}
                     className={classes.appBarButton}
                     disableRipple
                     variant='text'
@@ -32,8 +29,9 @@ export const AppBar = () => {
                     Home
                 </Button>
                 <Button
+                    aria-label='team'
                     component={Link}
-                    to='/team'
+                    to={Routes.team}
                     className={classes.appBarButton}
                     disableRipple
                     variant='text'

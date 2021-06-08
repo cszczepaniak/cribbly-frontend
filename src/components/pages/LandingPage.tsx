@@ -7,6 +7,7 @@ import { TournamentActions } from '../tournament/state/tournament-reducer';
 import { useAuth } from '../../shared/auth/auth-hooks';
 import { AuthActions } from '../../shared/auth/auth-reducer';
 import { Redirect } from 'react-router-dom';
+import { Routes } from '../../shared/routing/routes';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -62,7 +63,7 @@ export const LandingPage = () => {
     };
 
     if (isSignedIn) {
-        return <Redirect to='/home' />;
+        return <Redirect to={Routes.home} />;
     }
     if (authIsLoading) {
         return <div>loading</div>;
