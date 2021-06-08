@@ -1,12 +1,13 @@
 import firebase from 'firebase/app';
 import { Action } from 'redux';
-import { put, select, takeEvery } from 'redux-saga/effects';
+import { call, fork, put, select, take, takeEvery } from 'redux-saga/effects';
 import { AppSettings, FirebaseConfig } from '../settings/settings-model';
 import { selectSettings } from '../settings/settings-reducer';
 import { AuthActions } from './auth-reducer';
 import 'firebase/auth';
 import axios, { AxiosResponse } from 'axios';
 import { LoginResponse } from './auth-network-models';
+import { EventChannel, eventChannel } from '@redux-saga/core';
 
 type AuthFactory = (config: FirebaseConfig) => firebase.auth.Auth;
 let authInitialized = false;
@@ -36,12 +37,29 @@ function* signInWithGoogle(createAuth: AuthFactory) {
             ...loginResponse.data,
         }),
     );
+    yield fork(watchAuthEvents, auth);
 }
 
 function* signOut(createAuth: AuthFactory) {
     const settings: AppSettings = yield select(selectSettings);
     const auth = createAuth(settings.firebaseConfig);
     yield auth.signOut();
+}
+
+function* watchAuthEvents(auth: firebase.auth.Auth) {
+    const channel: EventChannel<firebase.User | null> = yield call(() =>
+        eventChannel(emit =>
+            auth.onAuthStateChanged(user => {
+                emit({ user });
+            }),
+        ),
+    );
+    while (true) {
+        const eventData: { user: firebase.User | null } = yield take(channel);
+        if (!eventData.user) {
+            yield put(AuthActions.signOutRequest());
+        }
+    }
 }
 
 export function createAuthSaga(createAuth = createDefaultAuth): () => Generator<Action> {

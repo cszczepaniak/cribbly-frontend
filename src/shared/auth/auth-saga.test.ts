@@ -6,7 +6,7 @@ import firebase from 'firebase/app';
 import { waitFor } from '@testing-library/react';
 import { FakeServer } from '../../testing/fake-server';
 import { ModelFactory } from '../../testing/model-factory';
-import { Player } from '../../models/Player';
+import { Player } from './auth-models';
 
 describe('auth saga', () => {
     describe('sign in with google', () => {
@@ -74,6 +74,27 @@ describe('auth saga', () => {
             store.dispatch(AuthActions.signOutRequest());
 
             expect(signOutFunc).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('auth state change subscription', () => {
+        test('should dispatch sign out request when an auth state change happens and user is null', async () => {
+            const signOutFunc = jest.fn();
+            const fakeAuth = createFakeAuth({ signOut: signOutFunc });
+            const fakeAuthFactory = () => fakeAuth;
+            FakeServer.setupPostRequest('/api/player/login', 200, {
+                player: ModelFactory.createPlayer(),
+                isReturning: false,
+            });
+            const store = createSagaTestStore(createAuthSaga(fakeAuthFactory));
+            store.dispatch(AuthActions.signInWithGoogleRequest());
+            await waitFor(() =>
+                expect(store.getActions()).toContainEqual(AuthActions.signInSuccess(expect.objectContaining({}))),
+            );
+            fakeAuth.triggerAuthStateChangedEvent(null);
+
+            await waitFor(() => expect(store.getActions()).toContainEqual(AuthActions.signOutRequest()));
+            await waitFor(() => expect(signOutFunc).toHaveBeenCalledTimes(1));
         });
     });
 });
