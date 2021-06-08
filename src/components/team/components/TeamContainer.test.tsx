@@ -80,5 +80,54 @@ describe('TeamPage', () => {
 
             expect(store.getActions()).toContainEqual(TeamActions.createTeamRequest(request));
         });
+
+        test('clicking cancel should dispatch reset search request', () => {
+            const me = ModelFactory.createPlayer();
+            const other = ModelFactory.createPlayer();
+
+            const store = createTestStore(
+                AuthActions.signInSuccess({ user: null, player: me, isReturning: false }),
+                TeamActions.searchPlayerSuccess(other),
+            );
+
+            renderWithProviders(<TeamContainer />, { store });
+
+            userEvent.click(screen.getByRole('button', { name: 'cancel' }));
+
+            expect(store.getActions()).toContainEqual(TeamActions.resetPlayerSearch());
+        });
+    });
+
+    describe('when on a team', () => {
+        test('should show team name', () => {
+            const me = ModelFactory.createPlayer();
+            const other = ModelFactory.createPlayer();
+            const team = ModelFactory.createTeam({ players: [me, other] });
+
+            const store = createTestStore(
+                AuthActions.signInSuccess({ user: null, player: me, isReturning: false }),
+                TeamActions.loadTeamSuccess(team),
+            );
+
+            const { container } = renderWithProviders(<TeamContainer />, { store });
+
+            expect(container).toHaveTextContent(team.name);
+        });
+
+        test('should show other player names', () => {
+            const me = ModelFactory.createPlayer();
+            const other = ModelFactory.createPlayer();
+            const team = ModelFactory.createTeam({ players: [me, other] });
+
+            const store = createTestStore(
+                AuthActions.signInSuccess({ user: null, player: me, isReturning: false }),
+                TeamActions.loadTeamSuccess(team),
+            );
+
+            const { container } = renderWithProviders(<TeamContainer />, { store });
+
+            expect(container).not.toHaveTextContent(me.name);
+            expect(container).toHaveTextContent(other.name);
+        });
     });
 });

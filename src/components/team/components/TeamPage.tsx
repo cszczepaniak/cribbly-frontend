@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Typography } from '@material-ui/core';
-import axios from 'axios';
-import { useAuth } from '../../../shared/auth/auth-hooks';
 import { PlayerSearch, Team } from '../state/team-model';
 import { Player } from '../../../shared/auth/auth-models';
 import { TeamCreate } from './TeamCreate';
@@ -9,13 +7,15 @@ import { ButtonClickCallback, InputChangeCallback } from '../../../shared/types/
 
 interface Props {
     team: Team | null;
+    player: Player | null;
     desiredTeamName: string;
     onDesiredTeamNameChange: InputChangeCallback;
     searchQuery: string;
     playerSearch: PlayerSearch;
     onSearchPlayerClick: ButtonClickCallback;
-    onCreateTeamClick: ButtonClickCallback;
     onSearchQueryChange: InputChangeCallback;
+    onCreateTeamClick: ButtonClickCallback;
+    onCancelCreateTeamClick: ButtonClickCallback;
 }
 
 export const TeamPage: React.FunctionComponent<Props> = ({
@@ -24,27 +24,12 @@ export const TeamPage: React.FunctionComponent<Props> = ({
     onSearchQueryChange,
     searchQuery,
     team,
+    player,
     desiredTeamName,
     onDesiredTeamNameChange,
     onCreateTeamClick,
+    onCancelCreateTeamClick,
 }) => {
-    const [myId, setMyId] = useState(0);
-    const { user } = useAuth();
-
-    useEffect(() => {
-        if (user && myId === 0) {
-            const fetchMe = async () => {
-                const response = await axios.get<Player>('/api/player', {
-                    headers: {
-                        Email: user.email,
-                    },
-                });
-                setMyId(response.data.id);
-            };
-            fetchMe();
-        }
-    }, [user, myId]);
-
     if (!team?.name) {
         return (
             <TeamCreate
@@ -54,8 +39,8 @@ export const TeamPage: React.FunctionComponent<Props> = ({
                 onSearchPlayerClick={onSearchPlayerClick}
                 onSearchQueryChange={onSearchQueryChange}
                 searchQuery={searchQuery}
-                onCancelCreateTeamClick={() => {}}
                 onCreateTeamClick={onCreateTeamClick}
+                onCancelCreateTeamClick={onCancelCreateTeamClick}
             />
         );
     }
@@ -65,7 +50,7 @@ export const TeamPage: React.FunctionComponent<Props> = ({
             <Typography>On team {team.name}</Typography>
             <Typography>Your teammates are:</Typography>
             {team.players
-                .filter(p => p.id !== myId)
+                .filter(p => p.id !== player?.id)
                 .map((p, i) => (
                     <Typography key={i}>{p.name}</Typography>
                 ))}

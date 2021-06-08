@@ -1,7 +1,6 @@
 import { Button, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { PlayerSearch } from '../state/team-model';
-import { TeamSearch } from './TeamSearch';
 
 const useStyles = makeStyles(theme => ({
     error: {
@@ -33,11 +32,18 @@ export const TeamCreate: React.FunctionComponent<Props> = ({
     const classes = useStyles();
     return (
         <div>
-            <TeamSearch
-                searchQuery={searchQuery}
-                onSearchQueryChange={onSearchQueryChange}
-                onSearchPlayerClick={onSearchPlayerClick}
+            <Typography>You're not on a team yet. Type a player's email in below to start creating a team.</Typography>
+            <TextField
+                variant='outlined'
+                fullWidth
+                placeholder='Enter an email address...'
+                value={searchQuery}
+                onChange={onSearchQueryChange}
+                inputProps={{ 'aria-label': 'search' }}
             />
+            <Button aria-label='search' onClick={onSearchPlayerClick}>
+                Search
+            </Button>
             {playerSearch.hasSearched && !playerSearch.result && (
                 <Typography
                     className={classes.error}

@@ -24,7 +24,7 @@ export const TeamContainer: React.FunctionComponent = () => {
     const [desiredTeamName, setDesiredTeamName] = useState('');
     const handleDesiredTeamNameChange: InputChangeCallback = e => setDesiredTeamName(e.target.value);
     const handleCreateTeamClick = () => {
-        if (playerSearch.result) {
+        if (playerSearch.result && player) {
             dispatch(
                 TeamActions.createTeamRequest({
                     name: desiredTeamName,
@@ -33,17 +33,24 @@ export const TeamContainer: React.FunctionComponent = () => {
             );
         }
     };
+    const handleCancelCreateTeamClick = () => {
+        if (playerSearch.hasSearched) {
+            dispatch(TeamActions.resetPlayerSearch());
+        }
+    };
 
     return (
         <TeamPage
+            team={team}
+            player={player}
             desiredTeamName={desiredTeamName}
             onDesiredTeamNameChange={handleDesiredTeamNameChange}
-            team={team}
-            playerSearch={playerSearch}
             searchQuery={playerQuery}
-            onCreateTeamClick={handleCreateTeamClick}
+            playerSearch={playerSearch}
             onSearchPlayerClick={handleSearchPlayerClick}
             onSearchQueryChange={handleSearchQueryChange}
+            onCreateTeamClick={handleCreateTeamClick}
+            onCancelCreateTeamClick={handleCancelCreateTeamClick}
         />
     );
 };

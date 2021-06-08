@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import firebase from 'firebase/app';
-import { Player } from '../../models/Player';
+import { Player } from './auth-models';
 
 type NullableFirebaseUser = firebase.User | null;
 
