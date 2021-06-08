@@ -3,7 +3,7 @@ import { Typography } from '@material-ui/core';
 import { PlayerSearch, Team } from '../state/team-model';
 import { Player } from '../../../shared/auth/auth-models';
 import { TeamCreate } from './TeamCreate';
-import { ButtonClickCallback, InputChangeCallback } from '../../../shared/types/change-callbacks';
+import { ButtonClickCallback, InputChangeCallback } from '../../../shared/types/input-callbacks';
 
 interface Props {
     team: Team | null;

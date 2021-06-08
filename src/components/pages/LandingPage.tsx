@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Button, Container, makeStyles, Typography, withStyles } from '@material-ui/core';
-import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 import moment from 'moment';
 import { useRootSelector } from '../../store';
 import { useDispatch } from 'react-redux';
@@ -85,7 +84,6 @@ export const LandingPage = () => {
                 >
                     Get Started
                 </CallToActionButton>
-                <AccessPrivateDataButton />
             </div>
         </Container>
     );

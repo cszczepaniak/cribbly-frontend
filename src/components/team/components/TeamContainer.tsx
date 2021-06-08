@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useAuth } from '../../../shared/auth/auth-hooks';
-import { InputChangeCallback } from '../../../shared/types/change-callbacks';
+import { InputChangeCallback } from '../../../shared/types/input-callbacks';
 import { useRootSelector } from '../../../store';
 import { TeamActions } from '../state/team-reducer';
 import { selectPlayerSearch, selectTeam } from '../state/team-selectors';
