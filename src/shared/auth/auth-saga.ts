@@ -2,7 +2,7 @@ import firebase from 'firebase/app';
 import { Action } from 'redux';
 import { call, fork, put, select, take, takeEvery } from 'redux-saga/effects';
 import { AppSettings, FirebaseConfig } from '../settings/settings-model';
-import { selectSettings } from '../settings/settings-reducer';
+import { selectSettings, SettingsActions } from '../settings/settings-reducer';
 import { AuthActions } from './auth-reducer';
 import 'firebase/auth';
 import axios, { AxiosResponse } from 'axios';
@@ -23,27 +23,21 @@ function createDefaultAuth(config: FirebaseConfig) {
 function* signInWithGoogle(createAuth: AuthFactory) {
     const settings: AppSettings = yield select(selectSettings);
     const auth = createAuth(settings.firebaseConfig);
-    const authResponse: firebase.auth.UserCredential = yield auth.signInWithPopup(
-        new firebase.auth.GoogleAuthProvider(),
-    );
-    const loginResponse: AxiosResponse<LoginResponse> = yield axios.post('/api/player/login', {
-        email: authResponse.user?.email,
-        name: authResponse.user?.displayName,
-    });
-
-    yield put(
-        AuthActions.signInSuccess({
-            user: authResponse.user,
-            ...loginResponse.data,
-        }),
-    );
-    yield fork(watchAuthEvents, auth);
+    yield auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
 }
 
 function* signOut(createAuth: AuthFactory) {
     const settings: AppSettings = yield select(selectSettings);
     const auth = createAuth(settings.firebaseConfig);
     yield auth.signOut();
+}
+
+function* watchSettings(createAuth: AuthFactory) {
+    // we know we have settings at this point
+    const settings: AppSettings = yield select(selectSettings);
+    const auth = createAuth(settings.firebaseConfig);
+    // start watching auth events indefinitely
+    yield fork(watchAuthEvents, auth);
 }
 
 function* watchAuthEvents(auth: firebase.auth.Auth) {
@@ -55,10 +49,23 @@ function* watchAuthEvents(auth: firebase.auth.Auth) {
         ),
     );
     while (true) {
-        const eventData: { user: firebase.User | null } = yield take(channel);
-        if (!eventData.user) {
+        const { user }: { user: firebase.User | null } = yield take(channel);
+        if (!user) {
             yield put(AuthActions.signOutRequest());
+            continue;
         }
+
+        const loginResponse: AxiosResponse<LoginResponse> = yield axios.post('/api/player/login', {
+            email: user.email,
+            name: user.displayName,
+        });
+
+        yield put(
+            AuthActions.signInSuccess({
+                user: user,
+                ...loginResponse.data,
+            }),
+        );
     }
 }
 
@@ -66,6 +73,8 @@ export function createAuthSaga(createAuth = createDefaultAuth): () => Generator<
     function* authSaga() {
         yield takeEvery(AuthActions.signInWithGoogleRequest.type, signInWithGoogle, createAuth);
         yield takeEvery(AuthActions.signOutRequest.type, signOut, createAuth);
+        // as soon as we've loaded settings, run the watchSettings saga
+        yield takeEvery(SettingsActions.loadSettingsSuccess.type, watchSettings, createAuth);
     }
     return authSaga;
 }
