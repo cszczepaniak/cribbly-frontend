@@ -19,6 +19,7 @@ describe('tournament reducer', () => {
     test('successfully loading a tournament sets loading to false', () => {
         const state = generateState(
             tournamentReducer,
+            TournamentActions.loadNextTournamentRequest(),
             TournamentActions.loadNextTournamentSuccess(ModelFactory.createTournament()),
         );
 

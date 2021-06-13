@@ -6,7 +6,7 @@ import { TournamentActions } from './tournament-reducer';
 import { tournamentSaga } from './tournament-saga';
 
 describe('tournament saga', () => {
-    test('should dispatch the success action when a request successfull happens', async () => {
+    test('should dispatch the success action when a request successfully happens', async () => {
         const store = createSagaTestStore(tournamentSaga);
         const tournament = ModelFactory.createTournament();
         FakeServer.setupGetRequest('/api/tournament/next', 200, tournament);
