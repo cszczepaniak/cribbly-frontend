@@ -8,6 +8,7 @@ import { useAuth } from '../../shared/auth/auth-hooks';
 import { AuthActions } from '../../shared/auth/auth-reducer';
 import { Redirect } from 'react-router-dom';
 import { Routes } from '../../shared/routing/routes';
+import { selectSettings } from '../../shared/settings/settings-reducer';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -52,6 +53,8 @@ export const LandingPage = () => {
         tournament: { date, isOpenForRegistration },
     } = useRootSelector(state => state.tournament);
 
+    const settings = useRootSelector(selectSettings);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -82,6 +85,7 @@ export const LandingPage = () => {
                     onClick={handleSignInClick}
                     color='primary'
                     variant='contained'
+                    disabled={settings.firebaseConfig.apiKey.length === 0}
                 >
                     Get Started
                 </CallToActionButton>
