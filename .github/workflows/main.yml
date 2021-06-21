@@ -1,7 +1,9 @@
-name: PR Build
+name: Build and Test
 
 on:
-  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   test:
@@ -14,3 +16,4 @@ jobs:
       - run: yarn
       - run: yarn lint
       - run: yarn test
+      - run: yarn build
