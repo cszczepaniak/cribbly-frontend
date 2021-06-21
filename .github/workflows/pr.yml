@@ -13,4 +13,6 @@ jobs:
           node-version: 14
       - run: yarn
       - run: yarn lint
-      - run: yarn test
+      - run: yarn test --coverage
+      - name: Upload coverage
+        uses: codecov/codecov-action@v1
