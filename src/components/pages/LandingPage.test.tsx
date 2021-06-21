@@ -1,11 +1,13 @@
 import { createTestStore } from '../../testing/redux-test-utils';
-import { renderWithProviders } from '../../testing/render';
+import { renderAtRouteWithProviders, renderWithProviders } from '../../testing/render';
 import { TournamentActions } from '../tournament/state/tournament-reducer';
 import { LandingPage } from './LandingPage';
 import { ModelFactory } from '../../testing/model-factory';
 import { AuthActions } from '../../shared/auth/auth-reducer';
 import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
+import { Routes } from '../../shared/routing/routes';
+import { SettingsActions } from '../../shared/settings/settings-reducer';
 
 describe('LandingPage', () => {
     describe('tournament info', () => {
@@ -60,13 +62,39 @@ describe('LandingPage', () => {
                 'No tournament is scheduled. You can still register to be prepared for future tournaments!',
             );
         });
+    });
 
-        test('clicking the sign in button dispatches request to sign in with google', () => {
+    test('sign in button is disabled if settings are not loaded', () => {});
+
+    describe('sign in button', () => {
+        test('sign in button is disabled if settings are not loaded', () => {
             const store = createTestStore();
+            renderWithProviders(<LandingPage />, { store });
+
+            expect(screen.getByRole('button', { name: 'sign in' })).toBeDisabled();
+        });
+        test('clicking the sign in button dispatches request to sign in with google', () => {
+            const store = createTestStore(SettingsActions.loadSettingsSuccess(ModelFactory.createAppSettings()));
             renderWithProviders(<LandingPage />, { store });
             userEvent.click(screen.getByRole('button', { name: 'sign in' }));
 
             expect(store.getActions()).toContainEqual(AuthActions.signInWithGoogleRequest());
+        });
+
+        test('given a user is signed in should redirect to home page', () => {
+            const store = createTestStore(
+                AuthActions.signInSuccess({
+                    user: ModelFactory.createUser(),
+                    player: ModelFactory.createPlayer(),
+                    isReturning: false,
+                }),
+            );
+            const { history } = renderAtRouteWithProviders(<LandingPage />, {
+                store,
+                routePath: '/',
+                initialEntries: [Routes.landingPage],
+            });
+            expect(history.entries).toContainEqual(expect.objectContaining({ pathname: Routes.home }));
         });
     });
 });

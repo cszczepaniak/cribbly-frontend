@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Button, Container, makeStyles, Typography, withStyles } from '@material-ui/core';
-import { AccessPrivateDataButton } from '../AccessPrivateDataButton';
 import moment from 'moment';
 import { useRootSelector } from '../../store';
 import { useDispatch } from 'react-redux';
@@ -8,6 +7,8 @@ import { TournamentActions } from '../tournament/state/tournament-reducer';
 import { useAuth } from '../../shared/auth/auth-hooks';
 import { AuthActions } from '../../shared/auth/auth-reducer';
 import { Redirect } from 'react-router-dom';
+import { Routes } from '../../shared/routing/routes';
+import { selectSettings } from '../../shared/settings/settings-reducer';
 
 const useStyles = makeStyles({
     landingPageContainer: {
@@ -52,6 +53,8 @@ export const LandingPage = () => {
         tournament: { date, isOpenForRegistration },
     } = useRootSelector(state => state.tournament);
 
+    const settings = useRootSelector(selectSettings);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -63,7 +66,7 @@ export const LandingPage = () => {
     };
 
     if (isSignedIn) {
-        return <Redirect to='/home' />;
+        return <Redirect to={Routes.home} />;
     }
     if (authIsLoading) {
         return <div>loading</div>;
@@ -82,10 +85,10 @@ export const LandingPage = () => {
                     onClick={handleSignInClick}
                     color='primary'
                     variant='contained'
+                    disabled={settings.firebaseConfig.apiKey.length === 0}
                 >
                     Get Started
                 </CallToActionButton>
-                <AccessPrivateDataButton />
             </div>
         </Container>
     );

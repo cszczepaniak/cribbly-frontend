@@ -2,6 +2,8 @@ import { Tournament } from '../components/tournament/state/tournament-model';
 import faker from 'faker';
 import { AppSettings } from '../shared/settings/settings-model';
 import firebase from 'firebase/app';
+import { Player } from '../shared/auth/auth-models';
+import { Team } from '../components/team/state/team-model';
 
 function createTournament(model: Partial<Tournament> = {}): Tournament {
     return {
@@ -38,8 +40,35 @@ function createUser(model: Partial<firebase.User> = {}): firebase.User {
     } as firebase.User;
 }
 
+function createPlayer(model: Partial<Player> = {}): Player {
+    return {
+        email: model.email || faker.internet.email(),
+        id: model.id || faker.datatype.number(),
+        name: model.name || faker.name.firstName(),
+    };
+}
+
+function createTeam(model: Partial<Team> = {}): Team {
+    return {
+        id: model.id || faker.datatype.number(),
+        name: model.name || faker.name.firstName(),
+        players: model.players || createMany(createPlayer, 2),
+    };
+}
+
+function createMany<T>(creator: (model?: Partial<T>) => T, n: number): T[] {
+    const result: T[] = [];
+    for (let i = 0; i < n; i++) {
+        result.push(creator());
+    }
+    return result;
+}
+
 export const ModelFactory = {
     createTournament,
     createAppSettings,
     createUser,
+    createPlayer,
+    createTeam,
+    createMany,
 };

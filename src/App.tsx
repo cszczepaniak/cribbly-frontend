@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import { BrowserRouter } from 'react-router-dom';
-import { Routes } from './components/routing/Routes';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Provider, useDispatch } from 'react-redux';
 import { store } from './store';
 import { SettingsActions } from './shared/settings/settings-reducer';
+import { LandingPage } from './components/pages/LandingPage';
+import { AuthenticatedApp } from './components/layout/AuthenticatedApp';
 
 const theme = createMuiTheme({
     props: {
@@ -22,7 +23,14 @@ export function AppComponent() {
     }, [dispatch]);
     return (
         <BrowserRouter>
-            <Routes />
+            <Switch>
+                <Route exact path='/'>
+                    <LandingPage />
+                </Route>
+                <Route path='/app'>
+                    <AuthenticatedApp />
+                </Route>
+            </Switch>
         </BrowserRouter>
     );
 }
